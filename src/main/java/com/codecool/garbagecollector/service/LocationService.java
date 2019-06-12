@@ -3,46 +3,32 @@ package com.codecool.garbagecollector.service;
 import com.codecool.garbagecollector.model.Address;
 import com.codecool.garbagecollector.model.Location;
 
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
+import javax.persistence.*;
 import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class LocationService {
+    private EntityManager entityManager;
+    private CriteriaBuilder cb;
+    private List<Predicate> predicates;
+
+    public LocationService(EntityManager entityManager) {
+        this.entityManager = entityManager;
+        this.cb = entityManager.getCriteriaBuilder();
+        this.predicates = new ArrayList<>();
+    }
 
     public void getLocationByParameters(EntityManager em, Map<String, String[]> queryParams) {
-        CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Location> q = cb.createQuery(Location.class);
         Root<Location> locationRoot = q.from(Location.class);
         Join<Location, Address> addressJoin = locationRoot.join("address", JoinType.LEFT);
 
-        List<Predicate> predicates = new ArrayList<>();
-
-        List<Predicate> idPredicates = new ArrayList<>();
-        if (queryParams.containsKey("id")) {
-            for (String idParam : queryParams.get("id")) {
-                idPredicates.add(cb.equal(locationRoot.get("id"), idParam));
-            }
-            predicates.add(cb.or(idPredicates.toArray(new Predicate[]{})));
-        }
-
-        List<Predicate> namePredicates = new ArrayList<>();
-        if (queryParams.containsKey("name")) {
-            for (String nameParam : queryParams.get("name")) {
-                namePredicates.add(cb.equal(locationRoot.get("name"), nameParam));
-            }
-            predicates.add(cb.or(namePredicates.toArray(new Predicate[]{})));
-        }
-
-        List<Predicate> cityPredicates = new ArrayList<>();
-        if (queryParams.containsKey("city")) {
-            for (String cityParam : queryParams.get("city")) {
-                cityPredicates.add(cb.equal(addressJoin.get("city"), cityParam));
-            }
-            predicates.add(cb.or(cityPredicates.toArray(new Predicate[]{})));
-        }
+        addParameterToQuery(queryParams, locationRoot, "id");
+        addParameterToQuery(queryParams, locationRoot, "name");
+        addParameterToQuery(queryParams, addressJoin, "city");
+        addParameterToQuery(queryParams, addressJoin, "country");
 
         q.where(predicates.toArray(new Predicate[]{}));
 
@@ -55,6 +41,17 @@ public class LocationService {
         for (Location location :
                 results) {
             System.out.println(location.getName());
+            System.out.println(location.getId());
+        }
+    }
+
+    private void addParameterToQuery(Map<String, String[]> queryParams, Path root, String paramName) {
+        List<Predicate> idPredicates = new ArrayList<>();
+        if (queryParams.containsKey(paramName)) {
+            for (String param : queryParams.get(paramName)) {
+                idPredicates.add(cb.equal(root.get(paramName), param));
+            }
+            predicates.add(cb.or(idPredicates.toArray(new Predicate[]{})));
         }
     }
 }
