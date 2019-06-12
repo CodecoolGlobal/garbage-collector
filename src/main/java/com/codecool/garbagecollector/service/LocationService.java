@@ -31,18 +31,10 @@ public class LocationService {
         addParameterToQuery(queryParams, addressJoin, "country");
 
         q.where(predicates.toArray(new Predicate[]{}));
-
         CriteriaQuery<Location> select = q.select(locationRoot);
-
         TypedQuery<Location> query = em.createQuery(select);
 
         List<Location> results = query.getResultList();
-
-        for (Location location :
-                results) {
-            System.out.println(location.getName());
-            System.out.println(location.getId());
-        }
     }
 
     private void addParameterToQuery(Map<String, String[]> queryParams, Path root, String paramName) {
