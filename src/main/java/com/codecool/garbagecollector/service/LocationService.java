@@ -14,8 +14,8 @@ public class LocationService {
     private CriteriaBuilder cb;
     private List<Predicate> predicates;
 
-    public LocationService(EntityManager entityManager) {
-        this.entityManager = entityManager;
+    public LocationService() {
+        this.entityManager = EMFactory.getEntityManager();
         this.cb = entityManager.getCriteriaBuilder();
         this.predicates = new ArrayList<>();
     }
@@ -35,15 +35,22 @@ public class LocationService {
         TypedQuery<Location> query = em.createQuery(select);
 
         List<Location> results = query.getResultList();
+
+        for (Location location :
+                results) {
+            System.out.println(location.getName());
+            System.out.println(location.getId());
+        }
+
     }
 
     private void addParameterToQuery(Map<String, String[]> queryParams, Path root, String paramName) {
-        List<Predicate> idPredicates = new ArrayList<>();
+        List<Predicate> orPredicates = new ArrayList<>();
         if (queryParams.containsKey(paramName)) {
             for (String param : queryParams.get(paramName)) {
-                idPredicates.add(cb.equal(root.get(paramName), param));
+                orPredicates.add(cb.equal(root.get(paramName), param));
             }
-            predicates.add(cb.or(idPredicates.toArray(new Predicate[]{})));
+            predicates.add(cb.or(orPredicates.toArray(new Predicate[]{})));
         }
     }
 }
