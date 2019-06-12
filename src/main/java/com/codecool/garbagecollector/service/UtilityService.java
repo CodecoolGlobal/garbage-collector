@@ -29,7 +29,7 @@ public class UtilityService {
         return queryParams;
     }
 
-    public static void addParameterToQuery(Map<String, String[]> queryParams, Path root, String paramName, List<Predicate> predicates, CriteriaBuilder cb) {
+    static void addParameterToQuery(Map<String, String[]> queryParams, Path root, String paramName, List<Predicate> predicates, CriteriaBuilder cb) {
         List<Predicate> orPredicates = new ArrayList<>();
         if (queryParams.containsKey(paramName)) {
             for (String param : queryParams.get(paramName)) {
