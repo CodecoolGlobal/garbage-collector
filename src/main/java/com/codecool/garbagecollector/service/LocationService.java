@@ -17,10 +17,11 @@ public class LocationService {
     public LocationService() {
         this.entityManager = EMFactory.getEntityManager();
         this.cb = entityManager.getCriteriaBuilder();
-        this.predicates = new ArrayList<>();
     }
 
-    public void getLocationByParameters(EntityManager em, Map<String, String[]> queryParams) {
+    public List<Location> getLocationByParameters(Map<String, String[]> queryParams) {
+        this.predicates = new ArrayList<>();
+
         CriteriaQuery<Location> q = cb.createQuery(Location.class);
         Root<Location> locationRoot = q.from(Location.class);
         Join<Location, Address> addressJoin = locationRoot.join("address", JoinType.LEFT);
@@ -32,16 +33,9 @@ public class LocationService {
 
         q.where(predicates.toArray(new Predicate[]{}));
         CriteriaQuery<Location> select = q.select(locationRoot);
-        TypedQuery<Location> query = em.createQuery(select);
+        TypedQuery<Location> query = entityManager.createQuery(select);
 
-        List<Location> results = query.getResultList();
-
-        for (Location location :
-                results) {
-            System.out.println(location.getName());
-            System.out.println(location.getId());
-        }
-
+        return query.getResultList();
     }
 
     private void addParameterToQuery(Map<String, String[]> queryParams, Path root, String paramName) {

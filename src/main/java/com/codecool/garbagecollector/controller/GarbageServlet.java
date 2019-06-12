@@ -1,5 +1,6 @@
 package com.codecool.garbagecollector.controller;
 
+import com.codecool.garbagecollector.service.UtilityService;
 import com.google.gson.Gson;
 
 import javax.servlet.ServletException;
@@ -17,27 +18,14 @@ public class GarbageServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Map<String, String[]> queryParams = getQueryParameters(req);
+        Map<String, String[]> queryParams = UtilityService.getQueryParameters(req);
 
         Gson gson = new Gson();
         resp.getWriter().write(gson.toJson(queryParams));
     }
 
-    private Map<String, String[]> getQueryParameters(HttpServletRequest req) {
-        Map<String, String[]> queryParams = new HashMap<>();
 
-        for (Map.Entry<String, String[]> entry : req.getParameterMap().entrySet()) {
-            queryParams.put(entry.getKey(), entry.getValue());
-        }
-
-        String uri = req.getRequestURI();
-        String[] uriSplit = uri.split("/");
-
-        if (uriSplit.length > 2) {
-            queryParams.put("id", new String[]{uriSplit[2]});
-        }
-        return queryParams;
     }
 
 
-}
+
