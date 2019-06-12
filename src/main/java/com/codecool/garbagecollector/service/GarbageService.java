@@ -5,15 +5,12 @@ import java.util.List;
 import java.util.Map;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.ParameterExpression;
-import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -31,7 +28,7 @@ public class GarbageService {
     private Root<Garbage> garbageRoot;
 
     public GarbageService() {
-        entityManager = Persistence.createEntityManagerFactory("GarbageCollector").createEntityManager();
+        entityManager = EMFactory.getEntityManager();
         builder = entityManager.getCriteriaBuilder();
         query = builder.createQuery(Garbage.class);
         garbageRoot = query.from(Garbage.class);
