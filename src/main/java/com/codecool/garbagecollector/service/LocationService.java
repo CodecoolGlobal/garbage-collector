@@ -12,7 +12,6 @@ import java.util.Map;
 public class LocationService {
     private EntityManager entityManager;
     private CriteriaBuilder cb;
-    private List<Predicate> predicates;
 
     public LocationService() {
         this.entityManager = EMFactory.getEntityManager();
@@ -20,31 +19,21 @@ public class LocationService {
     }
 
     public List<Location> getLocationByParameters(Map<String, String[]> queryParams) {
-        this.predicates = new ArrayList<>();
+        List<Predicate> predicates = new ArrayList<>();
 
         CriteriaQuery<Location> q = cb.createQuery(Location.class);
         Root<Location> locationRoot = q.from(Location.class);
         Join<Location, Address> addressJoin = locationRoot.join("address", JoinType.LEFT);
 
-        addParameterToQuery(queryParams, locationRoot, "id");
-        addParameterToQuery(queryParams, locationRoot, "name");
-        addParameterToQuery(queryParams, addressJoin, "city");
-        addParameterToQuery(queryParams, addressJoin, "country");
+        UtilityService.addParameterToQuery(queryParams, locationRoot, "id", predicates, cb);
+        UtilityService.addParameterToQuery(queryParams, locationRoot, "name", predicates, cb);
+        UtilityService.addParameterToQuery(queryParams, addressJoin, "city", predicates, cb);
+        UtilityService.addParameterToQuery(queryParams, addressJoin, "country", predicates, cb);
 
         q.where(predicates.toArray(new Predicate[]{}));
         CriteriaQuery<Location> select = q.select(locationRoot);
         TypedQuery<Location> query = entityManager.createQuery(select);
 
         return query.getResultList();
-    }
-
-    private void addParameterToQuery(Map<String, String[]> queryParams, Path root, String paramName) {
-        List<Predicate> orPredicates = new ArrayList<>();
-        if (queryParams.containsKey(paramName)) {
-            for (String param : queryParams.get(paramName)) {
-                orPredicates.add(cb.equal(root.get(paramName), param));
-            }
-            predicates.add(cb.or(orPredicates.toArray(new Predicate[]{})));
-        }
     }
 }

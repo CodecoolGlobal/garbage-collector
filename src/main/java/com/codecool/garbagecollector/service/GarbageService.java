@@ -29,7 +29,6 @@ public class GarbageService {
     private CriteriaBuilder builder;
     private CriteriaQuery<Garbage> query;
     private Root<Garbage> garbageRoot;
-    private List<Predicate> predicates;
 
     public GarbageService() {
         entityManager = Persistence.createEntityManagerFactory("GarbageCollector").createEntityManager();
@@ -39,30 +38,20 @@ public class GarbageService {
         query.select(garbageRoot);
     }
 
-    private void addInputToQuery(Map<String, String[]> inputs, Path root, String column) {
-        List<Predicate> columnPredicates = new ArrayList<>();
-        if (inputs.containsKey(column)) {
-            for (String row : inputs.get(column)) {
-                columnPredicates.add(builder.equal(root.get(column), row));
-            }
-            predicates.add(builder.or(columnPredicates.toArray(new Predicate[]{})));
-        }
-    }
-
     public List<Garbage> getStockBy(Map<String, String[]> inputs) {
-        predicates = new ArrayList<>();
+        List<Predicate> predicates = new ArrayList<>();
         Join<Garbage, Status> statusRoot = garbageRoot.join("status", JoinType.LEFT);
         Join<Garbage, Type> typeRoot = garbageRoot.join("type", JoinType.LEFT);
         Join<Garbage, Location> locationRoot = garbageRoot.join("location", JoinType.LEFT);
         Join<Location, Address> addressRoot = locationRoot.join("address", JoinType.LEFT);
 
-        addInputToQuery(inputs, garbageRoot, "id");
-        addInputToQuery(inputs, garbageRoot, "quantity");
-        addInputToQuery(inputs, typeRoot, "name");
-        addInputToQuery(inputs, statusRoot, "name");
-        addInputToQuery(inputs, locationRoot, "name");
-        addInputToQuery(inputs, addressRoot, "city");
-        addInputToQuery(inputs, addressRoot, "country");
+        UtilityService.addParameterToQuery(inputs, garbageRoot, "id", predicates, builder);
+        UtilityService.addParameterToQuery(inputs, garbageRoot, "quantity", predicates, builder);
+        UtilityService.addParameterToQuery(inputs, typeRoot, "name", predicates, builder);
+        UtilityService.addParameterToQuery(inputs, statusRoot, "name", predicates, builder);
+        UtilityService.addParameterToQuery(inputs, locationRoot, "name", predicates, builder);
+        UtilityService.addParameterToQuery(inputs, addressRoot, "city", predicates, builder);
+        UtilityService.addParameterToQuery(inputs, addressRoot, "country", predicates, builder);
 
         query.where(predicates.toArray(new Predicate[]{}));
         TypedQuery<Garbage> typedQuery = entityManager.createQuery(query);
