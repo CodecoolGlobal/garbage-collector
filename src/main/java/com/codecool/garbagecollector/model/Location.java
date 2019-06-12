@@ -24,7 +24,7 @@ public class Location {
     private String name;
 
     @OneToMany(mappedBy = "location")
-    private List<Garbage> stock;
+    private transient List<Garbage> stock;
 
     @Embedded
     private Address address;
