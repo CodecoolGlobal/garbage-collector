@@ -17,42 +17,36 @@ import javax.persistence.criteria.Root;
 import com.codecool.garbagecollector.model.Address;
 import com.codecool.garbagecollector.model.Garbage;
 import com.codecool.garbagecollector.model.Location;
-import com.codecool.garbagecollector.model.Status;
-import com.codecool.garbagecollector.model.Type;
 
 public class GarbageService {
 
     private EntityManager entityManager;
     private CriteriaBuilder builder;
-    private CriteriaQuery<Garbage> query;
-    private Root<Garbage> garbageRoot;
 
     public GarbageService() {
         entityManager = EMFactory.getEntityManager();
         builder = entityManager.getCriteriaBuilder();
-        query = builder.createQuery(Garbage.class);
-        garbageRoot = query.from(Garbage.class);
-        query.select(garbageRoot);
     }
 
     public List<Garbage> getStockBy(Map<String, String[]> inputs) {
+        CriteriaQuery<Garbage> query = builder.createQuery(Garbage.class);
+        Root<Garbage> garbageRoot = query.from(Garbage.class);
         List<Predicate> predicates = new ArrayList<>();
-        Join<Garbage, Status> statusRoot = garbageRoot.join("status", JoinType.LEFT);
-        Join<Garbage, Type> typeRoot = garbageRoot.join("type", JoinType.LEFT);
-        Join<Garbage, Location> locationRoot = garbageRoot.join("location", JoinType.LEFT);
-        Join<Location, Address> addressRoot = locationRoot.join("address", JoinType.LEFT);
+        Join<Location, Address> addressRoot = garbageRoot.join("location", JoinType.LEFT)
+                                                         .join("address", JoinType.LEFT);
 
         UtilityService.addParameterToQuery(inputs, garbageRoot, "id", predicates, builder);
         UtilityService.addParameterToQuery(inputs, garbageRoot, "quantity", predicates, builder);
-        UtilityService.addParameterToQuery(inputs, statusRoot, "status", predicates, builder);
-        UtilityService.addParameterToQuery(inputs, typeRoot, "type", predicates, builder);
-        UtilityService.addParameterToQuery(inputs, locationRoot, "location", predicates, builder);
+        UtilityService.addNestedParameterToQuery(inputs, garbageRoot, "status", predicates, builder);
+        UtilityService.addNestedParameterToQuery(inputs, garbageRoot, "type", predicates, builder);
+        UtilityService.addNestedParameterToQuery(inputs, garbageRoot, "location", predicates, builder);
         UtilityService.addParameterToQuery(inputs, addressRoot, "city", predicates, builder);
         UtilityService.addParameterToQuery(inputs, addressRoot, "country", predicates, builder);
 
         query.where(predicates.toArray(new Predicate[]{}));
-        TypedQuery<Garbage> typedQuery = entityManager.createQuery(query);
+        CriteriaQuery<Garbage> select = query.select(garbageRoot);
         query.orderBy(builder.asc(garbageRoot.get("id")));
+        TypedQuery<Garbage> typedQuery = entityManager.createQuery(select);
         return typedQuery.getResultList();
     }
 }
