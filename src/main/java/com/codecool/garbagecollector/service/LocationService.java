@@ -7,10 +7,7 @@ import com.codecool.garbagecollector.model.Location;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class LocationService {
     private EntityManager entityManager;
@@ -43,7 +40,7 @@ public class LocationService {
     public List<Location> deleteLocation(Map<String, String[]> queryParams) throws InvalidParametersException {
         if (deleteParametersValid(queryParams)) {
             List<Location> result = getLocationByParameters(queryParams);
-            if(result.size() != 1){
+            if (result.size() != 1) {
                 throw new InvalidParametersException("Unable to DELETE. Location with submitted id does not exist");
             }
             entityManager.getTransaction().begin();
@@ -63,24 +60,7 @@ public class LocationService {
     public List<Location> createLocation(Map<String, String[]> queryParams) throws InvalidParametersException {
         if (createParametersValid(queryParams)) {
             Location newLocation = new Location();
-            if (queryParams.containsKey("name")) {
-                newLocation.setName(queryParams.get("name")[0]);
-            }
-            if (queryParams.containsKey("phone")) {
-                newLocation.setPhoneNumber(queryParams.get("phone")[0]);
-            }
-            if (queryParams.containsKey("city")) {
-                newLocation.getAddress().setCity(queryParams.get("city")[0]);
-            }
-            if (queryParams.containsKey("country")) {
-                newLocation.getAddress().setCity(queryParams.get("country")[0]);
-            }
-            if (queryParams.containsKey("longitude")) {
-                newLocation.getAddress().getCoordinate().setLongitude(Double.parseDouble(queryParams.get("longitude")[0]));
-            }
-            if (queryParams.containsKey("latitude")) {
-                newLocation.getAddress().getCoordinate().setLatitude(Double.parseDouble(queryParams.get("latitude")[0]));
-            }
+            updateLocationDetails(queryParams, newLocation);
 
             entityManager.getTransaction().begin();
             entityManager.persist(newLocation);
@@ -95,25 +75,61 @@ public class LocationService {
 
     private boolean createParametersValid(Map<String, String[]> queryParams) {
         for (String[] values : queryParams.values()) {
-            if (values.length != 1){
+            if (values.length != 1) {
                 return false;
             }
         }
         return true;
     }
 
-    public List<Location> updateLocation(Map<String, String[]> queryParams) throws InvalidParametersException{
-        if(updateParametersValid(queryParams)){
+    public List<Location> updateLocation(Map<String, String[]> queryParams) throws InvalidParametersException {
+        if (updateParametersValid(queryParams)) {
+            Location location;
+            entityManager.getTransaction().begin();
+            Map<String, String[]> idMap = new HashMap<>();
+            idMap.put("id", queryParams.get("id"));
 
+            try {
+                location = getLocationByParameters(idMap).get(0);
+            } catch (IndexOutOfBoundsException e) {
+                throw new InvalidParametersException("Unable to PUT. Location with submitted id does not exist");
+            }
+            updateLocationDetails(queryParams, location);
+            entityManager.getTransaction().commit();
+            return Arrays.asList(location);
+
+        } else {
+            throw new InvalidParametersException("Invalid parameters for PUT request");
+        }
+    }
+
+    private void updateLocationDetails(Map<String, String[]> queryParams, Location location) {
+        if (queryParams.containsKey("name")) {
+            location.setName(queryParams.get("name")[0]);
+        }
+        if (queryParams.containsKey("phone")) {
+            location.setPhoneNumber(queryParams.get("phone")[0]);
+        }
+        if (queryParams.containsKey("city")) {
+            location.getAddress().setCity(queryParams.get("city")[0]);
+        }
+        if (queryParams.containsKey("country")) {
+            location.getAddress().setCity(queryParams.get("country")[0]);
+        }
+        if (queryParams.containsKey("longitude")) {
+            location.getAddress().getCoordinate().setLongitude(Double.parseDouble(queryParams.get("longitude")[0]));
+        }
+        if (queryParams.containsKey("latitude")) {
+            location.getAddress().getCoordinate().setLatitude(Double.parseDouble(queryParams.get("latitude")[0]));
         }
     }
 
     private boolean updateParametersValid(Map<String, String[]> queryParams) {
-        if (!queryParams.containsKey("id")){
-           return false;
+        if (!queryParams.containsKey("id")) {
+            return false;
         }
         for (String[] values : queryParams.values()) {
-            if (values.length > 1){
+            if (values.length > 1) {
                 return false;
             }
         }
