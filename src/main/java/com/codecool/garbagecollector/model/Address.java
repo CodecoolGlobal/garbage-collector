@@ -8,6 +8,10 @@ import javax.persistence.Embedded;
 @Embeddable
 public class Address {
 
+    public Address() {
+        this.coordinate = new Coordinate();
+    }
+
     @Embedded
     @Expose
     private Coordinate coordinate;

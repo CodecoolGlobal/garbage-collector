@@ -10,7 +10,8 @@ import java.util.List;
 public class Location {
 
     public Location() {
-        stock = new ArrayList<>();
+        this.stock = new ArrayList<>();
+        this.address = new Address();
     }
 
     @Id

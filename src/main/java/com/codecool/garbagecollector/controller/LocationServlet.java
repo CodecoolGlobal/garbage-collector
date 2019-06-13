@@ -45,6 +45,12 @@ public class LocationServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.getWriter().write("DUMMY RESPONSE");
+        Map<String, String[]> queryParams = UtilityService.getQueryParameters(req);
+
+        List<Location> newLocation = locationService.createLocation(queryParams);
+
+        resp.getWriter().write("Created following object:");
+        resp.getWriter().write(UtilityService.getFormattedJSON(newLocation));
     }
+
 }
