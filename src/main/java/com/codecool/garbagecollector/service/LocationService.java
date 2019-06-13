@@ -101,5 +101,23 @@ public class LocationService {
         }
         return true;
     }
+
+    public List<Location> updateLocation(Map<String, String[]> queryParams) throws InvalidParametersException{
+        if(updateParametersValid(queryParams)){
+
+        }
+    }
+
+    private boolean updateParametersValid(Map<String, String[]> queryParams) {
+        if (!queryParams.containsKey("id")){
+           return false;
+        }
+        for (String[] values : queryParams.values()) {
+            if (values.length > 1){
+                return false;
+            }
+        }
+        return true;
+    }
 }
 
