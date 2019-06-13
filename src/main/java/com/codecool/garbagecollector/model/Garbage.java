@@ -1,25 +1,39 @@
 package com.codecool.garbagecollector.model;
 
 import javax.persistence.*;
+import com.google.gson.annotations.Expose;
+
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class Garbage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Expose
     private long id;
 
     @Embedded
+    @Expose
     private Type type;
 
+    @Expose
     private int quantity;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
+    @Expose
     private Location location;
 
     @ManyToOne
+    @Expose
     private Status status;
 
+    @Expose
     private String description;
 
 

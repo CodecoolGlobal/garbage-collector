@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.Map;
 import java.io.IOException;
 
-import com.google.gson.Gson;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -26,11 +24,11 @@ public class GarbageServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Gson gson = new Gson();
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         Map<String, String[]> queryParams = UtilityService.getQueryParameters(req);
         List<Garbage> stock = garbageService.getStockBy(queryParams);
-        resp.getWriter().write(gson.toJson(stock));
+        String json = UtilityService.getFormattedJSON(stock);
+        resp.getWriter().write(json);
     }
 }
 

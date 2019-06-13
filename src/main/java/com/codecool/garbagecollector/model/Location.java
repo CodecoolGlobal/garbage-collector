@@ -21,8 +21,7 @@ public class Location {
     @Expose
     private String name;
 
-
-    @OneToMany(mappedBy = "location", orphanRemoval = true, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "location", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Garbage> stock;
 
     @Embedded

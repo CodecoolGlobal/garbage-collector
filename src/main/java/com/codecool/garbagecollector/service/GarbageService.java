@@ -8,6 +8,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
@@ -48,5 +49,14 @@ public class GarbageService {
         query.orderBy(builder.asc(garbageRoot.get("id")));
         TypedQuery<Garbage> typedQuery = entityManager.createQuery(select);
         return typedQuery.getResultList();
+    }
+
+    public void deleteGarbageBy(long id) {
+        entityManager.getTransaction().begin();
+        CriteriaDelete<Garbage> criteriaDelete = builder.createCriteriaDelete(Garbage.class);
+        Root<Garbage> garbageRoot = criteriaDelete.from(Garbage.class);
+        criteriaDelete.where(builder.equal(garbageRoot.get("id"), id));
+        entityManager.createQuery(criteriaDelete).executeUpdate();
+        entityManager.getTransaction().commit();
     }
 }

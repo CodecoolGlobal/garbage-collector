@@ -1,15 +1,16 @@
 package com.codecool.garbagecollector.service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
-
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class UtilityService {
 
@@ -51,5 +52,10 @@ public class UtilityService {
             }
             predicates.add(cb.or(orPredicates.toArray(new Predicate[]{})));
         }
+    }
+
+    public static <T> String getFormattedJSON(List<T> objects) {
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create();
+        return gson.toJson(objects);
     }
 }
