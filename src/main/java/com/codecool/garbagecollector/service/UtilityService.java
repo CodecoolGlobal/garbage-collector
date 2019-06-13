@@ -23,8 +23,8 @@ public class UtilityService {
         String uri = req.getRequestURI();
         String[] uriSplit = uri.split("/");
 
-        if (uriSplit.length > 2) {
-            queryParams.put("id", new String[]{uriSplit[2]});
+        if (uriSplit.length > 3) {
+            queryParams.put("id", new String[]{uriSplit[3]});
         }
         return queryParams;
     }

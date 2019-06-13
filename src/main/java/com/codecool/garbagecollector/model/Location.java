@@ -1,14 +1,10 @@
 package com.codecool.garbagecollector.model;
 
+import com.google.gson.annotations.Expose;
+
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
 
 @Entity
 public class Location {
@@ -19,16 +15,21 @@ public class Location {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Expose
     private long id;
 
+    @Expose
     private String name;
 
-    @OneToMany(mappedBy = "location")
-    private transient List<Garbage> stock;
+
+    @OneToMany(mappedBy = "location", orphanRemoval = true, cascade = CascadeType.ALL)
+    private List<Garbage> stock;
 
     @Embedded
+    @Expose
     private Address address;
 
+    @Expose
     private String phoneNumber;
 
     public long getId() {

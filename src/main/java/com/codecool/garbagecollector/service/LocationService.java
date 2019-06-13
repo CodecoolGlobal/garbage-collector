@@ -3,7 +3,9 @@ package com.codecool.garbagecollector.service;
 import com.codecool.garbagecollector.model.Address;
 import com.codecool.garbagecollector.model.Location;
 
-import javax.persistence.*;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,4 +38,18 @@ public class LocationService {
 
         return query.getResultList();
     }
+
+    public List<Location> deleteLocation(Map<String, String[]> queryParams) {
+        if (queryParams.containsKey("id") && queryParams.get("id").length == 1 && queryParams.size() == 1) {
+            List<Location> result = getLocationByParameters(queryParams);
+            EntityTransaction transaction = entityManager.getTransaction();
+            transaction.begin();
+            entityManager.remove(result.get(0));
+            transaction.commit();
+            return result;
+        }
+        return new ArrayList<>();
+
+    }
 }
+
