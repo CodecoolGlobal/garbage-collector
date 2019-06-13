@@ -44,14 +44,15 @@ public class GarbageService {
 
         UtilityService.addParameterToQuery(inputs, garbageRoot, "id", predicates, builder);
         UtilityService.addParameterToQuery(inputs, garbageRoot, "quantity", predicates, builder);
-        UtilityService.addParameterToQuery(inputs, typeRoot, "name", predicates, builder);
         UtilityService.addParameterToQuery(inputs, statusRoot, "name", predicates, builder);
+        UtilityService.addParameterToQuery(inputs, typeRoot, "name", predicates, builder);
         UtilityService.addParameterToQuery(inputs, locationRoot, "name", predicates, builder);
         UtilityService.addParameterToQuery(inputs, addressRoot, "city", predicates, builder);
         UtilityService.addParameterToQuery(inputs, addressRoot, "country", predicates, builder);
 
         query.where(predicates.toArray(new Predicate[]{}));
         TypedQuery<Garbage> typedQuery = entityManager.createQuery(query);
+        query.orderBy(builder.asc(garbageRoot.get("id")));
         return typedQuery.getResultList();
     }
 }
