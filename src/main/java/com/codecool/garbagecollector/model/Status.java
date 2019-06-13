@@ -1,5 +1,7 @@
 package com.codecool.garbagecollector.model;
 
+import com.google.gson.annotations.Expose;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,12 +20,14 @@ public class Status {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Expose
     private long id;
 
+    @Expose
     private String name;
 
     @OneToMany(mappedBy = "status")
-    private transient List<Garbage> stock;
+    private List<Garbage> stock;
 
     public long getId() {
         return id;

@@ -1,5 +1,7 @@
 package com.codecool.garbagecollector.model;
 
+import com.google.gson.annotations.Expose;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,16 +21,20 @@ public class Location {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Expose
     private long id;
 
+    @Expose
     private String name;
 
     @OneToMany(mappedBy = "location")
-    private transient List<Garbage> stock;
+    private List<Garbage> stock;
 
     @Embedded
+    @Expose
     private Address address;
 
+    @Expose
     private String phoneNumber;
 
     public long getId() {

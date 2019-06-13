@@ -1,5 +1,7 @@
 package com.codecool.garbagecollector.model;
 
+import com.google.gson.annotations.Expose;
+
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,19 +14,25 @@ public class Garbage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Expose
     private long id;
 
     @Embedded
+    @Expose
     private Type type;
 
+    @Expose
     private int quantity;
 
     @ManyToOne
+    @Expose
     private Location location;
 
     @ManyToOne
+    @Expose
     private Status status;
 
+    @Expose
     private String description;
 
 

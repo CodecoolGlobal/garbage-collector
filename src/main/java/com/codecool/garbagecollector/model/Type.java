@@ -1,12 +1,16 @@
 package com.codecool.garbagecollector.model;
 
+import com.google.gson.annotations.Expose;
+
 import javax.persistence.Embeddable;
 
 @Embeddable
 public class Type {
 
+    @Expose
     private String name;
 
+    @Expose
     private String unit;
 
     public String getName() {

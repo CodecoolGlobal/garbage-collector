@@ -57,7 +57,7 @@ public class UtilityService {
     }
 
     public static <T> String getFormattedJSON(List<T> objects) {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create();
         return gson.toJson(objects);
     }
 }
