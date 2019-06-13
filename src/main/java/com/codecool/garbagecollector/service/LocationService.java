@@ -1,10 +1,10 @@
 package com.codecool.garbagecollector.service;
 
+import com.codecool.garbagecollector.InvalidParametersException;
 import com.codecool.garbagecollector.model.Address;
 import com.codecool.garbagecollector.model.Location;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import java.util.ArrayList;
@@ -40,15 +40,19 @@ public class LocationService {
         return query.getResultList();
     }
 
-    public List<Location> deleteLocation(Map<String, String[]> queryParams) {
+    public List<Location> deleteLocation(Map<String, String[]> queryParams) throws InvalidParametersException {
         if (deleteParametersValid(queryParams)) {
             List<Location> result = getLocationByParameters(queryParams);
+            if(result.size() != 1){
+                throw new InvalidParametersException("Unable to DELETE. Location with submitted id does not exist");
+            }
             entityManager.getTransaction().begin();
             entityManager.remove(result.get(0));
             entityManager.getTransaction().commit();
             return result;
+        } else {
+            throw new InvalidParametersException("Invalid parameters for DELETE request");
         }
-        return new ArrayList<>();
 
     }
 
@@ -56,7 +60,7 @@ public class LocationService {
         return queryParams.containsKey("id") && queryParams.get("id").length == 1 && queryParams.size() == 1;
     }
 
-    public List<Location> createLocation(Map<String, String[]> queryParams) {
+    public List<Location> createLocation(Map<String, String[]> queryParams) throws InvalidParametersException {
         if (createParametersValid(queryParams)) {
             Location newLocation = new Location();
             if (queryParams.containsKey("name")) {
@@ -84,8 +88,9 @@ public class LocationService {
 
             return Arrays.asList(newLocation);
 
+        } else {
+            throw new InvalidParametersException("Invalid parameters for POST request");
         }
-        return new ArrayList<>();
     }
 
     private boolean createParametersValid(Map<String, String[]> queryParams) {
