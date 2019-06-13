@@ -14,7 +14,7 @@ import com.codecool.garbagecollector.model.Garbage;
 import com.codecool.garbagecollector.service.GarbageService;
 import com.codecool.garbagecollector.service.UtilityService;
 
-@WebServlet(urlPatterns = {"/garbage/*"})
+@WebServlet(urlPatterns = {"/api/garbage/*"})
 public class GarbageServlet extends HttpServlet {
 
     private GarbageService garbageService;
@@ -29,6 +29,23 @@ public class GarbageServlet extends HttpServlet {
         List<Garbage> stock = garbageService.getStockBy(queryParams);
         String json = UtilityService.getFormattedJSON(stock);
         resp.getWriter().write(json);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        super.doPost(req, resp);
+    }
+
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        super.doPut(req, resp);
+    }
+
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        Map<String, String[]> queryParams = UtilityService.getQueryParameters(req);
+        garbageService.deleteGarbageBy(queryParams);
+        resp.sendRedirect("/api/garbage/");
     }
 }
 
