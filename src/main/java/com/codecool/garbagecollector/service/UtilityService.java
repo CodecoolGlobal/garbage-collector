@@ -1,34 +1,13 @@
 package com.codecool.garbagecollector.service;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
-import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class UtilityService {
-
-    public static Map<String, String[]> getQueryParameters(HttpServletRequest req) {
-        Map<String, String[]> queryParams = new HashMap<>();
-
-        for (Map.Entry<String, String[]> entry : req.getParameterMap().entrySet()) {
-            queryParams.put(entry.getKey(), entry.getValue());
-        }
-
-        String uri = req.getRequestURI();
-        String[] uriSplit = uri.split("/");
-
-        if (uriSplit.length > 3) {
-            queryParams.put("id", new String[]{uriSplit[3]});
-        }
-        return queryParams;
-    }
+class UtilityService {
 
     static void addParameterToQuery(Map<String, String[]> queryParams, Path root, String paramName, List<Predicate> predicates, CriteriaBuilder cb) {
         List<Predicate> orPredicates = new ArrayList<>();
@@ -54,8 +33,4 @@ public class UtilityService {
         }
     }
 
-    public static <T> String getFormattedJSON(List<T> objects) {
-        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create();
-        return gson.toJson(objects);
-    }
 }
