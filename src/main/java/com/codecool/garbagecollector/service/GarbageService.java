@@ -44,9 +44,9 @@ public class GarbageService {
 
         UtilityService.addParameterToQuery(inputs, garbageRoot, "id", predicates, builder);
         UtilityService.addParameterToQuery(inputs, garbageRoot, "quantity", predicates, builder);
-        UtilityService.addParameterToQuery(inputs, statusRoot, "name", predicates, builder);
-        UtilityService.addParameterToQuery(inputs, typeRoot, "name", predicates, builder);
-        UtilityService.addParameterToQuery(inputs, locationRoot, "name", predicates, builder);
+        UtilityService.addParameterToQuery(inputs, statusRoot, "status", predicates, builder);
+        UtilityService.addParameterToQuery(inputs, typeRoot, "type", predicates, builder);
+        UtilityService.addParameterToQuery(inputs, locationRoot, "location", predicates, builder);
         UtilityService.addParameterToQuery(inputs, addressRoot, "city", predicates, builder);
         UtilityService.addParameterToQuery(inputs, addressRoot, "country", predicates, builder);
 
