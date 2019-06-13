@@ -1,5 +1,8 @@
 package com.codecool.garbagecollector.service;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -51,5 +54,10 @@ public class UtilityService {
             }
             predicates.add(cb.or(orPredicates.toArray(new Predicate[]{})));
         }
+    }
+
+    public static <T> String getFormattedJSON(List<T> objects) {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        return gson.toJson(objects);
     }
 }
