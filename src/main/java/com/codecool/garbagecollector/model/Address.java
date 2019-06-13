@@ -1,5 +1,7 @@
 package com.codecool.garbagecollector.model;
 
+import com.google.gson.annotations.Expose;
+
 import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
 
@@ -7,10 +9,13 @@ import javax.persistence.Embedded;
 public class Address {
 
     @Embedded
+    @Expose
     private Coordinate coordinate;
 
+    @Expose
     private String city;
 
+    @Expose
     private String country;
 
     public Coordinate getCoordinate() {

@@ -1,12 +1,16 @@
 package com.codecool.garbagecollector.model;
 
+import com.google.gson.annotations.Expose;
+
 import javax.persistence.Embeddable;
 
 @Embeddable
 public class Coordinate {
 
+    @Expose
     private double longitude;
 
+    @Expose
     private double latitude;
 
     public double getLongitude() {
