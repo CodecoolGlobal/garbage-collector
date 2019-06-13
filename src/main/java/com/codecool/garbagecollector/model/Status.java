@@ -23,7 +23,7 @@ public class Status {
     private String name;
 
     @OneToMany(mappedBy = "status")
-    private List<Garbage> stock;
+    private transient List<Garbage> stock;
 
     public long getId() {
         return id;
