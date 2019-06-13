@@ -34,7 +34,7 @@ public class GarbageService {
         Root<Garbage> garbageRoot = query.from(Garbage.class);
         List<Predicate> predicates = new ArrayList<>();
         Join<Location, Address> addressRoot = garbageRoot.join("location", JoinType.LEFT)
-                                                         .join("address", JoinType.LEFT);
+                .join("address", JoinType.LEFT);
 
         UtilityService.addParameterToQuery(inputs, garbageRoot, "id", predicates, builder);
         UtilityService.addParameterToQuery(inputs, garbageRoot, "quantity", predicates, builder);
@@ -51,12 +51,15 @@ public class GarbageService {
         return typedQuery.getResultList();
     }
 
-    public void deleteGarbageBy(long id) {
-        entityManager.getTransaction().begin();
-        CriteriaDelete<Garbage> criteriaDelete = builder.createCriteriaDelete(Garbage.class);
-        Root<Garbage> garbageRoot = criteriaDelete.from(Garbage.class);
-        criteriaDelete.where(builder.equal(garbageRoot.get("id"), id));
-        entityManager.createQuery(criteriaDelete).executeUpdate();
-        entityManager.getTransaction().commit();
+    public void deleteGarbageBy(Map<String, String[]> inputs) {
+        if (inputs.containsKey("id") && inputs.size() == 1) {
+            long id = Long.valueOf(inputs.get("id")[0]);
+            entityManager.getTransaction().begin();
+            CriteriaDelete<Garbage> criteriaDelete = builder.createCriteriaDelete(Garbage.class);
+            Root<Garbage> garbageRoot = criteriaDelete.from(Garbage.class);
+            criteriaDelete.where(builder.equal(garbageRoot.get("id"), id));
+            entityManager.createQuery(criteriaDelete).executeUpdate();
+            entityManager.getTransaction().commit();
+        }
     }
 }
