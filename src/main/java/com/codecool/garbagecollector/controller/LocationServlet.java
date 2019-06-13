@@ -3,7 +3,6 @@ package com.codecool.garbagecollector.controller;
 import com.codecool.garbagecollector.model.Location;
 import com.codecool.garbagecollector.service.LocationService;
 import com.codecool.garbagecollector.service.UtilityService;
-import com.google.gson.Gson;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -30,8 +29,8 @@ public class LocationServlet extends HttpServlet {
 
         List<Location> result = locationService.getLocationByParameters(queryParams);
 
-        Gson gson = new Gson();
-        resp.getWriter().write(gson.toJson(result));
+        String json = UtilityService.getFormattedJSON(result);
+        resp.getWriter().write(json);
     }
 
     @Override
