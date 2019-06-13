@@ -15,6 +15,7 @@ import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.codecool.garbagecollector.InvalidParametersException;
 import com.codecool.garbagecollector.model.Address;
 import com.codecool.garbagecollector.model.Garbage;
 import com.codecool.garbagecollector.model.Location;
@@ -51,15 +52,25 @@ public class GarbageService {
         return typedQuery.getResultList();
     }
 
-    public void deleteGarbageBy(Map<String, String[]> inputs) {
+    public void deleteGarbageById(Map<String, String[]> inputs) throws InvalidParametersException {
+        Long id = getValidId(inputs);
+        deleteGarbageBy(id);
+    }
+
+    private void deleteGarbageBy(long id) {
+        entityManager.getTransaction().begin();
+        CriteriaDelete<Garbage> criteriaDelete = builder.createCriteriaDelete(Garbage.class);
+        Root<Garbage> garbageRoot = criteriaDelete.from(Garbage.class);
+        criteriaDelete.where(builder.equal(garbageRoot.get("id"), id));
+        entityManager.createQuery(criteriaDelete).executeUpdate();
+        entityManager.getTransaction().commit();
+    }
+
+    private Long getValidId(Map<String, String[]> inputs) throws InvalidParametersException {
         if (inputs.containsKey("id") && inputs.size() == 1) {
-            long id = Long.valueOf(inputs.get("id")[0]);
-            entityManager.getTransaction().begin();
-            CriteriaDelete<Garbage> criteriaDelete = builder.createCriteriaDelete(Garbage.class);
-            Root<Garbage> garbageRoot = criteriaDelete.from(Garbage.class);
-            criteriaDelete.where(builder.equal(garbageRoot.get("id"), id));
-            entityManager.createQuery(criteriaDelete).executeUpdate();
-            entityManager.getTransaction().commit();
+            return Long.valueOf(inputs.get("id")[0]);
+        } else {
+            throw new InvalidParametersException("Unable to handle DELETE by given parameters.");
         }
     }
 }

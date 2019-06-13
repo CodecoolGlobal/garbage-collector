@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.codecool.garbagecollector.model.Garbage;
 import com.codecool.garbagecollector.service.GarbageService;
-import com.codecool.garbagecollector.service.UtilityService;
+import com.codecool.garbagecollector.InvalidParametersException;
 
 @WebServlet(urlPatterns = {"/api/garbage/*"})
 public class GarbageServlet extends HttpServlet {
@@ -25,9 +25,9 @@ public class GarbageServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        Map<String, String[]> queryParams = UtilityService.getQueryParameters(req);
+        Map<String, String[]> queryParams = ServletUtility.getQueryParameters(req);
         List<Garbage> stock = garbageService.getStockBy(queryParams);
-        String json = UtilityService.getFormattedJSON(stock);
+        String json = ServletUtility.getFormattedJSON(stock);
         resp.getWriter().write(json);
     }
 
@@ -43,9 +43,13 @@ public class GarbageServlet extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Map<String, String[]> queryParams = UtilityService.getQueryParameters(req);
-        garbageService.deleteGarbageBy(queryParams);
-        resp.sendRedirect("/api/garbage/");
+        Map<String, String[]> queryParams = ServletUtility.getQueryParameters(req);
+        try {
+            garbageService.deleteGarbageById(queryParams);
+            resp.sendRedirect("/api/garbage/");
+        } catch (InvalidParametersException e) {
+            ServletUtility.redirectInvalidParameters(req, resp, e);
+        }
     }
 }
 
