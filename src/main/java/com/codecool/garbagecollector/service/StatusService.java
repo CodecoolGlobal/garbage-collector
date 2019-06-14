@@ -32,7 +32,8 @@ class StatusService {
             long id = statusesMap.get(inputs.get("status")[0]);
             return getStatusById(id);
         } else {
-            throw new InvalidParametersException("Unable to proceed because of invalid status parameter.");
+            throw new InvalidParametersException("Unable to proceed because of invalid status parameter.\n"
+                    + "Possible values: Available, Ready, Collected.");
         }
     }
 
