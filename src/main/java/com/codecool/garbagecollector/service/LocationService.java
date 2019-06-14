@@ -135,5 +135,15 @@ public class LocationService {
         }
         return true;
     }
+
+    Location getLocationById(long id) {
+        CriteriaQuery<Location> criteriaQuery = cb.createQuery(Location.class);
+        Root<Location> locationRoot = criteriaQuery.from(Location.class);
+        ParameterExpression<Long> idParameter = cb.parameter(Long.class);
+        criteriaQuery.select(locationRoot).where(cb.equal(locationRoot.get("id"), idParameter));
+        TypedQuery<Location> typedQuery = entityManager.createQuery(criteriaQuery);
+        typedQuery.setParameter(idParameter, id);
+        return typedQuery.getSingleResult();
+    }
 }
 

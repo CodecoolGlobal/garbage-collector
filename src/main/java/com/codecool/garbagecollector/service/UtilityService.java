@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.codecool.garbagecollector.InvalidParametersException;
+
 class UtilityService {
 
     static void addParameterToQuery(Map<String, String[]> queryParams, Path root, String paramName, List<Predicate> predicates, CriteriaBuilder cb) {
@@ -33,4 +35,27 @@ class UtilityService {
         }
     }
 
+    static long getValidLong(String id) throws InvalidParametersException {
+        try {
+            return Long.parseLong(id);
+        } catch (NumberFormatException e) {
+            throw new InvalidParametersException("Unable to parse id. Invalid value.");
+        }
+    }
+
+    static int getValidInt(String quantity) throws InvalidParametersException {
+        try {
+            return Integer.parseInt(quantity);
+        } catch (NumberFormatException e) {
+            throw new InvalidParametersException("Unable to parse quantity. Invalid value");
+        }
+    }
+
+    static double getValidDouble(String coordinate) throws InvalidParametersException {
+        try {
+            return Double.parseDouble(coordinate);
+        } catch (NumberFormatException e) {
+            throw new InvalidParametersException("Unable to parse coordinate. Invalid value");
+        }
+    }
 }
