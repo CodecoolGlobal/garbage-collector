@@ -65,12 +65,24 @@ public class GarbageService {
 
     public void createGarbageFrom(Map<String, String[]> inputs) throws InvalidParametersException {
         if (areValidInputs(inputs)) {
-            Garbage garbage = getSetUpGarbage(inputs);
+            Garbage garbage = new Garbage();
+            setUpGarbage(inputs, garbage);
             entityManager.getTransaction().begin();
             entityManager.persist(garbage);
             entityManager.getTransaction().commit();
         } else {
             throw new InvalidParametersException("Unable to POST. Invalid parameters.");
+        }
+    }
+
+    public void updateGarbageFrom(Map<String, String[]> inputs) throws InvalidParametersException {
+        if (areValidInputs(inputs) && inputs.get("id").length == 1) {
+            entityManager.clear();
+            Garbage foundGarbage = entityManager.find(Garbage.class, UtilityService.getValidLong(inputs.get("id")[0]));
+            setUpGarbage(inputs, foundGarbage);
+            entityManager.getTransaction().begin();
+            entityManager.merge(foundGarbage);
+            entityManager.getTransaction().commit();
         }
     }
 
@@ -96,8 +108,7 @@ public class GarbageService {
         return Arrays.stream(garbageFields).allMatch(inputs::containsKey);
     }
 
-    private Garbage getSetUpGarbage(Map<String, String[]> inputs) throws InvalidParametersException {
-        Garbage garbage = new Garbage();
+    private void setUpGarbage(Map<String, String[]> inputs, Garbage garbage) throws InvalidParametersException {
         Location location = locationService.getLocationById(UtilityService.getValidLong(inputs.get("location")[0]));
         Type type = new Type();
         type.setName(inputs.get("type")[0]);
@@ -106,6 +117,5 @@ public class GarbageService {
         garbage.setLocation(location);
         garbage.setQuantity(UtilityService.getValidInt(inputs.get("quantity")[0]));
         garbage.setDescription(inputs.get("description")[0]);
-        return garbage;
     }
 }

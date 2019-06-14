@@ -44,7 +44,13 @@ public class GarbageServlet extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doPut(req, resp);
+        Map<String, String[]> queryParams = ServletUtility.getQueryParameters(req);
+        try {
+            garbageService.updateGarbageFrom(queryParams);
+            resp.sendRedirect("/api/garbage/");
+        } catch (InvalidParametersException e) {
+            ServletUtility.redirectInvalidParameters(req, resp, e);
+        }
     }
 
     @Override
