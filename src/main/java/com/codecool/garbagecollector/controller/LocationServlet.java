@@ -63,4 +63,21 @@ public class LocationServlet extends HttpServlet {
         resp.getWriter().write("Created following object:");
         resp.getWriter().write(ServletUtility.getFormattedJSON(newLocation));
     }
+
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        Map<String, String[]> queryParams = ServletUtility.getQueryParameters(req);
+
+        List<Location> updatedLocation = null;
+
+        try {
+            updatedLocation = locationService.updateLocation(queryParams);
+        } catch (InvalidParametersException e) {
+            ServletUtility.redirectInvalidParameters(req, resp, e);
+        }
+
+        resp.getWriter().write("Updated following object:");
+        resp.getWriter().write(ServletUtility.getFormattedJSON(updatedLocation));
+
+    }
 }

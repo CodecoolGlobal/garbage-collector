@@ -1,27 +1,53 @@
 package com.codecool.garbagecollector.main;
 
-import com.codecool.garbagecollector.model.Address;
-import com.codecool.garbagecollector.model.Coordinate;
-import com.codecool.garbagecollector.model.Garbage;
-import com.codecool.garbagecollector.model.Location;
-import com.codecool.garbagecollector.model.Status;
+import com.codecool.garbagecollector.model.*;
+import com.codecool.garbagecollector.service.EMFactory;
+import com.codecool.garbagecollector.service.LocationService;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Main {
 
     public static void main(String[] args) {
 
 
-        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("GarbageCollector");
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        EntityManager entityManager = EMFactory.getEntityManager();
+
+        populateDB(entityManager);
+
+        entityManager.clear();
+
+        LocationService ls = new LocationService();
+//        Map<String, String[]> params = new HashMap<>();
+//        params.put("id", new String[]{"2", "1"});
+//
+//        params.put("name", new String[]{"Codecool"});
+//        params.put("city", new String[]{"Poznan"});
+//        ls.getLocationByParameters(params);
+
+//        entityManager.getTransaction().begin();
+//        Garbage delete = entityManager.find(Garbage.class, 1L);
+//        entityManager.remove(delete);
+//        entityManager.getTransaction().commit();
+
+        entityManager.close();
+    }
+
+    private static void populateDB(EntityManager entityManager) {
         EntityTransaction transaction = entityManager.getTransaction();
 
         Garbage garbage = new Garbage();
         garbage.setDescription("Description");
+
+        Type type = new Type();
+        type.setName("plastic");
+        type.setUnit("kg");
+        garbage.setType(type);
 
         Location location = new Location();
         location.setName("Codecool");
@@ -30,7 +56,7 @@ public class Main {
         status.setName("Available");
 
         Address address = new Address();
-        address.setCity("Cracow");
+        address.setCity("Krakow");
 
         Coordinate coordinate = new Coordinate();
         coordinate.setLatitude(7382.293029);
@@ -47,16 +73,32 @@ public class Main {
         entityManager.persist(garbage);
         transaction.commit();
 
-        entityManager.clear();
+        Garbage garbage2 = new Garbage();
+        garbage2.setDescription("Another");
 
-        Location location1 = entityManager.find(Location.class, 1L);
-        System.out.println("======================================");
-        System.out.println(location1.getName());
-        for(Garbage garbage1 : location1.getStock()) {
-            System.out.println(garbage.getDescription());
-        }
-        System.out.println("======================================");
-        entityManager.close();
-        entityManagerFactory.close();
+        Type type2 = new Type();
+        type2.setName("bio");
+        type2.setUnit("kg");
+        garbage2.setType(type2);
+
+        Location location2 = new Location();
+        location2.setName("Sklepik");
+
+        Address address2 = new Address();
+        address2.setCity("Poznan");
+
+        Coordinate coordinate2 = new Coordinate();
+        coordinate2.setLatitude(5454.5454);
+        coordinate2.setLongitude(33.4343);
+
+        address2.setCoordinate(coordinate2);
+        location2.setAddress(address2);
+        location2.addGarbage(garbage2);
+        status.addGarbage(garbage2);
+
+        transaction.begin();
+        entityManager.persist(location2);
+        entityManager.persist(garbage2);
+        transaction.commit();
     }
 }
