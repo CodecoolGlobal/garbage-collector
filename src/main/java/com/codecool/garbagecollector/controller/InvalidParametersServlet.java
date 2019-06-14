@@ -10,27 +10,30 @@ import java.io.IOException;
 
 @WebServlet(urlPatterns = {"/api/invalid"})
 public class InvalidParametersServlet extends HttpServlet {
+
+    private final String helpPage = "\nFor more information please visit: /api/help/";
+
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
-        resp.getWriter().write((String) session.getAttribute("exceptionMessage"));
+        resp.getWriter().write(session.getAttribute("exceptionMessage") + helpPage);
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
-        resp.getWriter().write((String) session.getAttribute("exceptionMessage"));
+        resp.getWriter().write(session.getAttribute("exceptionMessage") + helpPage);
     }
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
-        resp.getWriter().write((String) session.getAttribute("exceptionMessage"));
+        resp.getWriter().write(session.getAttribute("exceptionMessage") + helpPage);
     }
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
-        resp.getWriter().write((String) session.getAttribute("exceptionMessage"));
+        resp.getWriter().write(session.getAttribute("exceptionMessage") + helpPage);
     }
 }
