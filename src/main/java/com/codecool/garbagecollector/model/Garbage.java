@@ -1,14 +1,13 @@
 package com.codecool.garbagecollector.model;
 
-import javax.persistence.*;
-import com.google.gson.annotations.Expose;
-
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+
+import com.google.gson.annotations.Expose;
 
 @Entity
 public class Garbage {
@@ -35,7 +34,6 @@ public class Garbage {
 
     @Expose
     private String description;
-
 
     public long getId() {
         return id;
