@@ -23,18 +23,6 @@ public class Main {
         entityManager.clear();
 
         LocationService ls = new LocationService();
-//        Map<String, String[]> params = new HashMap<>();
-//        params.put("id", new String[]{"2", "1"});
-//
-//        params.put("name", new String[]{"Codecool"});
-//        params.put("city", new String[]{"Poznan"});
-//        ls.getLocationByParameters(params);
-
-//        entityManager.getTransaction().begin();
-//        Garbage delete = entityManager.find(Garbage.class, 1L);
-//        entityManager.remove(delete);
-//        entityManager.getTransaction().commit();
-
         entityManager.close();
     }
 
